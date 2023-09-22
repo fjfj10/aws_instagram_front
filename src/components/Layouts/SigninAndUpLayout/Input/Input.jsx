@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 /** @jsxImportSource @emotion/react */
 import * as S from './Style'
 
-function Input({ placeholder, name, onChange }) {
+function Input({ type, placeholder, name, account, changeAccount }) {
     const [ isEmpty, setIsEmpty ] = useState(true);
     const [ inputValue, setInputValue ] = useState("");
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
+        changeAccount(e.target.name, e.target.value);
     }
 
     useEffect(() => {
@@ -18,13 +19,19 @@ function Input({ placeholder, name, onChange }) {
         <div css={S.SLayout}>
             <label css={S.SInput(isEmpty)}>
                 <span>{placeholder}</span>
-                <input type="text" name={name} onChange={handleInputChange} />
+                <input type={type} name={name} onChange={handleInputChange} />
             </label>
             <div css={S.SStateBox}>
 
             </div>
         </div>
     );
+}
+
+Input.defaultProps = {
+    type: "text",
+    placeholder: "",
+    name: ""
 }
 
 export default Input;
