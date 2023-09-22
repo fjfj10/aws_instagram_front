@@ -3,6 +3,7 @@ import SigninAndUpLayout from '../../components/Layouts/SigninAndUpLayout/Signin
 import Top from '../../components/Layouts/SigninAndUpLayout/Top/Top';
 import Input from '../../components/Layouts/SigninAndUpLayout/Input/Input';
 import OrBar from '../../components/Layouts/SigninAndUpLayout/OrBar/OrBar';
+import { signup } from '../../apis/api/account';
 
 function Signup(props) {
     const emptyAccount = {
@@ -25,7 +26,11 @@ function Signup(props) {
         // Object.values(account) : account의 value가 리스트로 변환
         // 비워진게 있으면 true 없으면 false
         setIsAccountValuesEmpty(Object.values(account).includes(""))
-    }, [account])
+    }, [account]);
+
+    const handleSignupSubmit = () => {
+        signup(account);
+    }
 
     return (
         <SigninAndUpLayout>
@@ -42,7 +47,7 @@ function Signup(props) {
                     <Input placeholder={"성명"} name={"name"} changeAccount={changeAccount} />
                     <Input placeholder={"사용자이름"} name={"username"} changeAccount={changeAccount} />
                     <Input type={"password"} placeholder={"비밀번호"} name={"password"} changeAccount={changeAccount} />
-                    <button disabled={isAccountValuesEmpty}>
+                    <button onClick={handleSignupSubmit} disabled={isAccountValuesEmpty}>
                         가입
                     </button>
                 </div>
