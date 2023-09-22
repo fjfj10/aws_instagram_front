@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 /** @jsxImportSource @emotion/react */
-import * as S from './style'
+import * as S from './Style'
 import { GoHomeFill, GoHome } from 'react-icons/go'
 import { FiSearch, FiInstagram } from 'react-icons/fi'
 import { AiFillPlusSquare, AiOutlinePlusSquare } from 'react-icons/ai'
