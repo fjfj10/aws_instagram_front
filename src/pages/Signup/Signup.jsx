@@ -7,8 +7,11 @@ import Input from '../../components/Layouts/SigninAndUpLayout/Input/Input';
 import OrBar from '../../components/Layouts/SigninAndUpLayout/OrBar/OrBar';
 import { signup } from '../../apis/api/account';
 import { RiKakaoTalkFill } from 'react-icons/ri'
+import { useNavigate } from 'react-router-dom';
 
 function Signup(props) {
+    const navigate = useNavigate();
+
     const emptyAccount = {
         phoneAndEmail: "",
         name: "",
@@ -35,6 +38,7 @@ function Signup(props) {
     const handleSignupSubmit = async () => {
         try {
             const response = await signup(account);
+            navigate("/accounts/login");
 
         } catch (error) {
             const responseErrorMsg = error.response.data;
@@ -49,9 +53,9 @@ function Signup(props) {
             }else if(keys.includes("password")) {
                 setErrorMsg(responseErrorMsg.password);
             }
-            
+
         }
-        
+
     }
 
     return (
