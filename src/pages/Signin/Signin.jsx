@@ -10,7 +10,7 @@ function Signin(props) {
 
     const emptyAccount = {
         phoneAndEmailAndUsername: "",
-        password: ""
+        loginPassword: ""
     }
     const [ account, setAccount ] = useState(emptyAccount);
     const [ isAccountValuesEmpty, setIsAccountValuesEmpty ] = useState(true);
@@ -30,15 +30,18 @@ function Signin(props) {
     return (
         <SigninAndUpLayout>
             <Top>
-                <Input placeholder={"전화번호, 사용자이름 또는 이메일 주소"} name={"phoneAndEmailAndUsername"} changeAccount={changeAccount} />
-                <Input placeholder={"비밀번호"} type={"password"} name={"password"} changeAccount={changeAccount} />
-                <button disabled={isAccountValuesEmpty}>
-                    로그인
-                </button>
-                <OrBar />
                 <div>
-                    kakao로 로그인
+                    <Input placeholder={"전화번호, 사용자이름 또는 이메일 주소"} name={"phoneAndEmailAndUsername"} changeAccount={changeAccount} />
+                    <Input placeholder={"비밀번호"} type={"password"} name={"loginPassword"} changeAccount={changeAccount} />
+                    <button disabled={isAccountValuesEmpty}>
+                        로그인
+                    </button>
+                    <OrBar />
+                    <div>
+                        kakao로 로그인
+                    </div>
                 </div>
+                
             </Top>
         </SigninAndUpLayout>
     );

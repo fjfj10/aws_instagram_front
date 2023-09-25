@@ -28,12 +28,15 @@ function Input({ type, placeholder, name, changeAccount }) {
         }
 
         if(!!regex && !regex.test(value)) {
-            console.log(`${e.target.name}, 매칭되지 않음`);
             setInputstate(<><ImCancelCircle /></>);
             return;
+        }else if(!!regex && regex.test(value)) {
+            setInputstate(<><BsCheckCircle /></>);
+        }else {
+            setInputstate("");
         }
 
-        setInputstate(<><BsCheckCircle /></>);
+        
 
     }
 
