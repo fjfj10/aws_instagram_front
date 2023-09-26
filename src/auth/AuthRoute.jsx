@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation} from 'react-router-dom';
 
 // 시작 시 로그인 여부에 따라 다른 페이지를 보여주도록
 function AuthRoute({ element }) {
-    const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
     const permitAllPath = ["/accounts"];
