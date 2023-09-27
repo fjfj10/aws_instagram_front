@@ -4,8 +4,10 @@ import Top from '../../components/Layouts/SigninAndUpLayout/Top/Top';
 import Input from '../../components/Layouts/SigninAndUpLayout/Input/Input';
 import OrBar from '../../components/Layouts/SigninAndUpLayout/OrBar/OrBar';
 import { signin } from '../../apis/api/account';
+import { useNavigate } from 'react-router-dom';
 
 function Signin(props) {
+    const navigate = useNavigate();
 
     const emptyAccount = {
         phoneOrEmailOrUsername: "",
@@ -28,7 +30,10 @@ function Signin(props) {
 
     const handleSigninSubmit = async () => {
         try {
-            await signin(account);
+            const response = await signin(account);
+            // JWT토큰은 Bearer를 앞에 붙여준다(공식임)
+            localStorage.setItem("accessToken", "Bearer " + response.data);
+            navigate("/");
         } catch (error) {
             setErrorMsg(error.response.data.errorMessage);
         }
@@ -41,9 +46,11 @@ function Signin(props) {
                 <div>
                     <Input placeholder={"전화번호, 사용자이름 또는 이메일 주소"} name={"phoneOrEmailOrUsername"} changeAccount={changeAccount} />
                     <Input placeholder={"비밀번호"} type={"password"} name={"loginPassword"} changeAccount={changeAccount} />
-                    <button onClick={handleSigninSubmit} disabled={isAccountValuesEmpty}>
-                        로그인
-                    </button>
+                    <div>
+                        <button onClick={handleSigninSubmit} disabled={isAccountValuesEmpty}>
+                            로그인
+                        </button>
+                    </div>
                     <OrBar />
                     <div>
                         kakao로 로그인
