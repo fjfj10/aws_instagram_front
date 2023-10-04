@@ -1,37 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate} from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { authenticate } from '../apis/api/account';
+import Loading from '../components/Loading/Loading';
 
-// 시작 시 로그인 여부에 따라 다른 페이지를 보여주도록
 function AuthRoute({ element }) {
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
     const permitAllPath = ["/accounts"];
-    const [ authenticated, setAuthenticated ] = useState(false);
+    // useQuery는 get요청만 가능, key값 : authenticate, 에러처리 가능
+    const authenticateState = useQuery(["authenticate"], authenticate, {
+        // 재요청 횟수 지정
+        retry: 1
+        // onError: (error) => {
+        //     console.log("에러");
+        //     console.log(error);
+        // }
+    });
 
-    useEffect(() => {
-        authenticate()
-        .then(response => {
-            setAuthenticated(response.data);
-            for(let path of permitAllPath) {
-                if(pathname.startsWith(path)) {
-                    //인증이 됐는지 확인
-                    if(authenticated) {
-                        navigate("/");
-                    }
-                }
+    // console.log(authenticateState)
+
+    if(authenticateState.isLoading) {
+        console.log("로딩중...");
+        return <Loading />;
+    }
+
+    // 인증이 되지 않았을 때 isError = true
+    if(authenticateState.isError) {
+        for(let path of permitAllPath) {
+            // 로그인 안된채로 로그인 또는 회원가입 페이지로 들어가면 element를 그냥 반환 시켜준다
+            if (pathname.startsWith(path)) {
+                return element;
             }
-        })
-        .catch(error => {
-            alert(error.response.data);
-            setAuthenticated(false);
-            if(!authenticated) {
-                navigate("/accounts/login");
-            }
-        })
-        
-    }, [authenticated]);
+        }
+        return <Navigate to={"/accounts/login"} />;
+    }
+    
+    for(let path of permitAllPath) {
+        // 로그인 된채로 로그인 회원가입 페이지로 들어가면 홈으로 보냄
+        if (pathname.startsWith(path)) {
+            return <Navigate to={"/"} />;
+        }
+    }
 
     return element;
 

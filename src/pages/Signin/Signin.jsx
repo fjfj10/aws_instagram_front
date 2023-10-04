@@ -5,9 +5,11 @@ import Input from '../../components/Layouts/SigninAndUpLayout/Input/Input';
 import OrBar from '../../components/Layouts/SigninAndUpLayout/OrBar/OrBar';
 import { signin } from '../../apis/api/account';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 
 function Signin(props) {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const emptyAccount = {
         phoneOrEmailOrUsername: "",
@@ -33,7 +35,8 @@ function Signin(props) {
             const response = await signin(account);
             // JWT토큰은 Bearer를 앞에 붙여준다(공식임)
             localStorage.setItem("accessToken", "Bearer " + response.data);
-            navigate("/");
+            // 토큰을 넣은 후 reload하여 instance의 Authorization을 변경
+            window.location.reload();
         } catch (error) {
             setErrorMsg(error.response.data.errorMessage);
         }
