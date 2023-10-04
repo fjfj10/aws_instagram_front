@@ -2,16 +2,18 @@ import { useQuery } from 'react-query';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { authenticate } from '../apis/api/account';
 import Loading from '../components/Loading/Loading';
+import { useState } from 'react';
 
 function AuthRoute({ element }) {
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
     const permitAllPath = ["/accounts"];
-    // useQuery는 get요청만 가능, key값 : authenticate, 에러처리 가능
+    // useQuery는 get요청만 가능, key값 : ["authenticate"] 꼭 배열안에, {옵션: 에러처리, 요청횟수조정 등등 가능}
     const authenticateState = useQuery(["authenticate"], authenticate, {
         // 재요청 횟수 지정
-        retry: 1
+        retry: 0,
+        refetchOnWindowFocus: false
         // onError: (error) => {
         //     console.log("에러");
         //     console.log(error);
@@ -21,7 +23,6 @@ function AuthRoute({ element }) {
     // console.log(authenticateState)
 
     if(authenticateState.isLoading) {
-        console.log("로딩중...");
         return <Loading />;
     }
 
