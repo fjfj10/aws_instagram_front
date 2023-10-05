@@ -6,9 +6,14 @@ import { FiSearch, FiInstagram } from 'react-icons/fi'
 import { AiFillPlusSquare, AiOutlinePlusSquare } from 'react-icons/ai'
 import Navitem from './Navitem/Navitem';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { showModalState } from '../../store/atoms/ModalState';
+import AddFeedModal from '../Modals/AddFeedModal/AddFeedModal';
 
 function Sidebar(props) {
     const navigate = useNavigate();
+    const [ showModal, setShowModal ] = useRecoilState(showModalState);
+    
     const [ isSeletedList, setIsSelectedList ] = useState([true, false, false, false]);
 
     const handleHomeClick = () => {
@@ -17,8 +22,9 @@ function Sidebar(props) {
     const handleSearchClick = () => {
         setIsSelectedList([false, true, false, false])
     }
-    const handleAddContentClick = () => {
+    const handleAddFeedClick = () => {
         setIsSelectedList([false, false, true, false])
+        setShowModal(<AddFeedModal />);
     }
     const handleProfileClick = () => {
         setIsSelectedList([false, false, false, true])
@@ -35,7 +41,7 @@ function Sidebar(props) {
             <Navitem onClick={handleSearchClick}>
                 <FiSearch />
             </Navitem>
-            <Navitem onClick={handleAddContentClick}>
+            <Navitem onClick={handleAddFeedClick}>
                 {isSeletedList[2] ? <AiFillPlusSquare /> : <AiOutlinePlusSquare />}
             </Navitem>
             <Navitem onClick={handleProfileClick}>
