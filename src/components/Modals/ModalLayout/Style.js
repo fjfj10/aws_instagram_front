@@ -11,8 +11,8 @@ export const SLayout = css`
 `
 
 export const SContainer = css`
+    transition: all 1s ease;
     border-radius: 15px;
-    width: 396px;
     height: 420px;
     background-color: white;
     overflow: hidden;

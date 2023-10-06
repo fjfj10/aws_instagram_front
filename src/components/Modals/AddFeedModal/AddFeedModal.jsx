@@ -6,7 +6,9 @@ import ModalHeader from '../ModalHeader/ModalHeader';
 import ModalBody from '../ModalBody/ModalBody';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { HiArrowNarrowLeft } from 'react-icons/hi'
+import { HiArrowNarrowLeft } from 'react-icons/hi';
+import defaultrofile from '../../../assets/profileImg.png';
+import { uploadFeed } from '../../../apis/api/feed';
 
 function SelectFeedImg({ setPage, setFiles }) {
     const fileInputRef = useRef();
@@ -76,14 +78,41 @@ function ReviewFeedImg({ files }) {
     )
 }
 
+function FeedDetail({ isShow, setContent }) {
+
+    const handleContentOnChange = (e) => {
+        setContent(e.target.value);
+    }
+
+    return(
+        <div css={S.FeedDetailContainer(isShow)}>
+            <div css={S.ProfileContainer}>
+                <div css={S.ProfileImgBox}>
+                    <img src={defaultrofile} alt="" />
+                </div>
+                <div>junil</div>
+            </div>
+            
+            <textarea css={S.FeedContent} name="content" placeholder='문구를 입력하세요...' onChange={handleContentOnChange}></textarea>
+            
+        </div>
+    );
+}
+
 function AddFeedModal(props) {
     const [ page, setPage ] = useState(1);
-    const [ files, setFiles ] = useState([]);
     const [ bodyComponent, setBodyComponent ] = useState(<></>);
-
+    const [ isShowFeedDetail, setIsShowFeedDetail ] = useState(false);
+    
+    const [ title, setTitle ] = useState("");
     const [ leftButton, setLeftButton ] = useState(<div></div>);
     const [ rightButton, setRightButton ] = useState(<div></div>);
+    
+    const [ files, setFiles ] = useState([]);
+    const [ content, setContent ] = useState("");
 
+
+    
     const BackButton = () => {
         return (
             <div onClick={() => {setPage(page - 1)}}>
@@ -100,30 +129,72 @@ function AddFeedModal(props) {
         );
     }
 
+    const SubmitButton = () => {
+        // 서버로 정보를 보낼때는 form-data(map과 비슷, "key", "value"로 넣을 수 있다)로 변경하여 전송
+        // Json으로는 이미지, 동영상 안보냄 -> 너무 길어지기 때문 => form-data사용
+        const handleSubmitClick = async () => {
+            const formData = new FormData();
+            formData.append("content", content);
+            // list가 아닌 배열로 넘겨줘야함. formData는 같은 key값에  데이터를 넣으면 추가 됌 = 덮어쓰지X
+            const fileArray = Array.from(files);
+            fileArray.forEach(file => {
+                formData.append("files", file);
+            })
+            
+
+            try{
+                const response = await uploadFeed(formData);
+                console.log(response);
+            }catch(error) {
+                console.log(error);
+            }
+        }
+
+        return (
+            <div onClick={handleSubmitClick}>
+                <span>공유하기</span>
+            </div>
+        );
+    }
+
     useEffect(() => {
         switch(page) {
             case 1:
-                setBodyComponent(<SelectFeedImg setPage={setPage} setFiles={setFiles} />)
+                setBodyComponent(<SelectFeedImg setPage={setPage} setFiles={setFiles} />);
+                setTitle("새 게시물 만들기");
                 setLeftButton(<div></div>);
                 setRightButton(<div></div>);
+                setIsShowFeedDetail(false);
                 break;
             case 2:
-                setBodyComponent(<ReviewFeedImg files={files} />)
+                setBodyComponent(<>
+                    <ReviewFeedImg files={files} />
+                    <FeedDetail isShow={isShowFeedDetail} setContent={setContent}/>
+                </>);
+                setTitle("미리보기");
+                setIsShowFeedDetail(false);
                 setLeftButton(BackButton());
                 setRightButton(NextButton());
                 break;
             case 3:
-                setBodyComponent(<><ReviewFeedImg files={files} /><div></div></>)
+                setBodyComponent(<>
+                    <ReviewFeedImg files={files} />
+                    <FeedDetail isShow={isShowFeedDetail} setContent={setContent}/>
+                </>);
+                setTitle("새 게시물 만들기");
+                setIsShowFeedDetail(true);
                 setLeftButton(BackButton());
+                setRightButton(SubmitButton());
                 break;
             default:
 
         }
-    }, [page]);
+    }, [ page, isShowFeedDetail, content ]);
+
 
     return (
         <ModalLayout>
-            <ModalHeader title={"새 게시물 만들기"} leftButton={leftButton} rightButton={rightButton} />
+            <ModalHeader title={title} leftButton={leftButton} rightButton={rightButton} />
             <ModalBody>
                 {bodyComponent}
             </ModalBody>
