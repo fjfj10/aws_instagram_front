@@ -135,7 +135,7 @@ function AddFeedModal(props) {
         const handleSubmitClick = async () => {
             const formData = new FormData();
             formData.append("content", content);
-            // list가 아닌 배열로 넘겨줘야함. formData는 같은 key값에  데이터를 넣으면 추가 됌 = 덮어쓰지X
+            // list가 아닌 배열로 넘겨줘야함. formData는 같은 key값에  데이터를 넣으면 추가 = 덮어쓰지X
             const fileArray = Array.from(files);
             fileArray.forEach(file => {
                 formData.append("files", file);
@@ -144,9 +144,10 @@ function AddFeedModal(props) {
 
             try{
                 const response = await uploadFeed(formData);
-                console.log(response);
+                window.location.replace("/");
             }catch(error) {
                 console.log(error);
+                window.location.reload();
             }
         }
 
